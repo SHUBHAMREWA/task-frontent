@@ -33,10 +33,11 @@ const Navbar = () => {
                 </span>
                 <button
                   onClick={handleLogout}
-                  className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-all duration-200 font-medium"
+                  className="px-4 py-2 cursor-pointer bg-white/10 hover:bg-white/20 text-white rounded-lg transition-all duration-200 font-medium"
                 >
                   Logout
                 </button>
+
               </>
             ) : (
               <>

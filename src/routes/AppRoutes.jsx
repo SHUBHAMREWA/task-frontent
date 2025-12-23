@@ -8,6 +8,9 @@ import Login from '../pages/Login';
 import Signup from '../pages/Signup';
 import AdminDashboard from '../pages/AdminDashboard';
 import StudentDashboard from '../pages/StudentDashboard';
+import ForgotPassword from '../pages/ForgotPassword';
+import ResetPassword from '../pages/ResetPassword';
+
 
 const AppRoutes = () => {
   const { user, loading } = useAuth();
@@ -19,7 +22,6 @@ const AppRoutes = () => {
   return (
     <Router>
       <Routes>
-        {/* Public Routes */}
         <Route
           path="/login"
           element={user ? <Navigate to={user.role === 'admin' ? '/admin/dashboard' : '/student/dashboard'} replace /> : <Login />}
@@ -28,8 +30,11 @@ const AppRoutes = () => {
           path="/signup"
           element={user ? <Navigate to={user.role === 'admin' ? '/admin/dashboard' : '/student/dashboard'} replace /> : <Signup />}
         />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
 
         {/* Protected Routes - Admin */}
+
         <Route
           path="/admin/dashboard"
           element={

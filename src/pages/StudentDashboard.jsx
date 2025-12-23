@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
-import { getStudentProfile, updateStudentProfile } from '../services/api';
+import { getStudentProfile, updateStudentProfile, changePassword } from '../services/api';
 import Navbar from '../components/Navbar';
 
 const StudentDashboard = () => {
@@ -12,6 +12,8 @@ const StudentDashboard = () => {
     name: '',
     email: '',
     course: '',
+    currentPassword: '',
+    newPassword: '',
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -29,6 +31,8 @@ const StudentDashboard = () => {
         name: data.name,
         email: data.email,
         course: data.course,
+        currentPassword: '',
+        newPassword: '',
       });
     } catch (err) {
       setError(err.message || 'Failed to fetch profile');
@@ -43,10 +47,28 @@ const StudentDashboard = () => {
     setSuccess('');
 
     try {
-      const updated = await updateStudentProfile(formData);
+      // 1. Update Profile Logic
+      const updated = await updateStudentProfile({
+        name: formData.name,
+        email: formData.email,
+        course: formData.course
+      });
+      
+      // 2. Change Password Logic
+      if (formData.currentPassword && formData.newPassword) {
+         await changePassword({
+            currentPassword: formData.currentPassword,
+            newPassword: formData.newPassword
+         });
+      }
+
       setProfile(updated);
       setEditing(false);
-      setSuccess('Profile updated successfully!');
+      
+      // Clear password fields
+      setFormData(prev => ({ ...prev, currentPassword: '', newPassword: '' }));
+
+      setSuccess('Profile (and password if provided) updated successfully!');
       setTimeout(() => setSuccess(''), 3000);
     } catch (err) {
       setError(err.message || 'Failed to update profile');
@@ -142,7 +164,7 @@ const StudentDashboard = () => {
                 <div className="pt-6">
                   <button
                     onClick={() => setEditing(true)}
-                    className="px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl font-semibold hover:from-purple-700 hover:to-indigo-700 transition-all duration-200 shadow-lg transform hover:scale-105"
+                    className="px-6 py-3 cursor-pointer bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl font-semibold hover:from-purple-700 hover:to-indigo-700 transition-all duration-200 shadow-lg transform hover:scale-105"
                   >
                     Edit Profile
                   </button>
@@ -180,10 +202,36 @@ const StudentDashboard = () => {
                     className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                   />
                 </div>
+
+               <div className="border-t pt-4 mt-4">
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">Change Password (Optional)</h3>
+                <div className="space-y-3">
+                    <div>
+                        <input
+                        type="password"
+                        placeholder="Current Password"
+                        value={formData.currentPassword || ''}
+                        onChange={(e) => setFormData({ ...formData, currentPassword: e.target.value })}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                        />
+                    </div>
+                    <div>
+                        <input
+                        type="password"
+                        placeholder="New Password"
+                        value={formData.newPassword || ''}
+                        onChange={(e) => setFormData({ ...formData, newPassword: e.target.value })}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                        />
+                    </div>
+                </div>
+              </div>
+
                 <div className="flex space-x-3 pt-4">
+
                   <button
                     type="submit"
-                    className="px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl font-semibold hover:from-purple-700 hover:to-indigo-700 transition-all duration-200"
+                    className="px-6 py-3 cursor-pointer bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl font-semibold hover:from-purple-700 hover:to-indigo-700 transition-all duration-200"
                   >
                     Save Changes
                   </button>
@@ -197,7 +245,7 @@ const StudentDashboard = () => {
                         course: profile.course,
                       });
                     }}
-                    className="px-6 py-3 bg-gray-200 text-gray-700 rounded-xl font-semibold hover:bg-gray-300 transition-all duration-200"
+                    className="px-6 py-3 cursor-pointer bg-gray-200 text-gray-700 rounded-xl font-semibold hover:bg-gray-300 transition-all duration-200"
                   >
                     Cancel
                   </button>
@@ -205,6 +253,7 @@ const StudentDashboard = () => {
               </form>
             )}
           </div>
+
         </div>
 
         {/* Stats Cards */}

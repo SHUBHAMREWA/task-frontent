@@ -118,7 +118,13 @@ const Login = () => {
                 className="w-full px-4 py-3 bg-white/10 border border-white/30 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
                 placeholder="••••••••"
               />
+              <div className="flex justify-end mt-1">
+                <Link to="/forgot-password" className="text-sm text-white/80 hover:text-white hover:underline transition-colors">
+                  Forgot Password?
+                </Link>
+              </div>
             </div>
+
 
             {/* Submit Button */}
             <button

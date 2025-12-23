@@ -15,8 +15,10 @@ const apiCall = async (endpoint, options = {}) => {
 
   const response = await fetch(`${API_URL}${endpoint}`, {
     ...options,
+    credentials: 'include', // Send cookies if available
     headers,
   });
+
 
   const data = await response.json();
 
@@ -43,6 +45,28 @@ export const signup = async (userData) => {
     body: JSON.stringify(userData),
   });
 };
+
+export const forgotPassword = async (email) => {
+  return apiCall('/user/forgot-password', {
+    method: 'POST',
+    body: JSON.stringify({ email }),
+  });
+};
+
+export const resetPassword = async (token, password) => {
+  return apiCall(`/user/reset-password/${token}`, {
+    method: 'PUT',
+    body: JSON.stringify({ password }),
+  });
+};
+
+export const changePassword = async (passwords) => {
+  return apiCall('/user/change-password', {
+    method: 'PUT',
+    body: JSON.stringify(passwords),
+  });
+};
+
 
 
 // Student APIs
