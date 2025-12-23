@@ -16,9 +16,13 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo/Brand */}
           <div className="flex items-center">
-            <Link to="/" className="text-white text-xl font-bold hover:text-purple-200 transition-colors">
-              Student Dashboard
+            <Link 
+              to={user ? (user.role === 'admin' ? '/admin/dashboard' : '/student/dashboard') : '/'} 
+              className="text-white text-xl font-bold hover:text-purple-200 transition-colors"
+            >
+              {user?.role === 'admin' ? 'Admin Dashboard' : 'Student Dashboard'}
             </Link>
+
           </div>
 
           {/* Navigation Links */}
